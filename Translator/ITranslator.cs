@@ -1,9 +1,6 @@
-﻿namespace WebNovelTranslate.Translator
+﻿namespace WebNovelTranslate.Translator;
+
+public interface ITranslator
 {
-    public interface ITranslator
-    {
-        public Task<string> JapaneseToEnglishAsync(string jpnStr);
-    }
+    public Task<string> JapaneseToEnglishAsync(string jpnStr);
 }
-
-
