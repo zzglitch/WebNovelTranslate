@@ -2,5 +2,5 @@
 
 public interface ITranslator
 {
-    public Task<string> JapaneseToEnglishAsync(string jpnStr);
+    public Task<string> JapaneseToEnglishAsync(List<string>? jpnStrs);
 }

@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1"/>
+        <PackageReference Include="Google.Cloud.Translation.V2" Version="3.4.0" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.61"/>
         <PackageReference Include="OllamaSharp" Version="2.0.6"/>
     </ItemGroup>

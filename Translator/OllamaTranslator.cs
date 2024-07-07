@@ -1,4 +1,5 @@
-﻿using OllamaSharp;
+﻿using System.Text;
+using OllamaSharp;
 
 namespace WebNovelTranslate.Translator;
 
@@ -15,14 +16,23 @@ internal class OllamaTranslator : ITranslator
         _ollama.SelectedModel = "qwen2:latest";
     }
 
-    public async Task<string> JapaneseToEnglishAsync(string jpnStr)
+    public async Task<string> JapaneseToEnglishAsync(List<string>? jpnStrs)
     {
-        if (string.IsNullOrEmpty(jpnStr) || string.IsNullOrWhiteSpace(jpnStr))
+        if (jpnStrs == null || jpnStrs.Count == 0)
             return "";
-
-        var prompt = $"translate following japanese to english with no added prefix or explanation in the output: {jpnStr.Trim()}";
-        var response = await _ollama.GetCompletion(prompt, null);
-        var line = response.Response;
-        return !string.IsNullOrEmpty(line) ? line : "";
+        var builder = new StringBuilder();
+        foreach (var jpnStr in jpnStrs)
+        {
+            if (string.IsNullOrEmpty(jpnStr) || string.IsNullOrWhiteSpace(jpnStr))
+            {
+                builder.AppendLine("");
+                continue;
+            }
+            var prompt = $"translate following japanese to english with no added prefix or explanation in the output: {jpnStr.Trim()}";
+            var response = await _ollama.GetCompletion(prompt, null);
+            var engStr = response.Response ?? "";
+            builder.AppendLine(engStr);
+        }
+        return builder.ToString();
     }
 }

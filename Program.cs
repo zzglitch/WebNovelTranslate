@@ -73,22 +73,18 @@ internal class Program
 
         // get list of untranslated chapters
         var untranslatedChapters = downloadedChapterFiles.Keys.Except(translatedChapterFiles.Keys).ToList();
+        
+        // translate each chapter
         foreach (var untranslatedChapterNum in untranslatedChapters)
         {
-            // load japanese chapter by lines
-            var lines = ChapterFile.ReadChapterFileByLine(downloadPath, untranslatedChapterNum);
-
-            // translate line by line due to Ollama size limitations
-            ITranslator translator = new OllamaTranslator(opts.Verbose);
-            var translatedChapter = new StringBuilder();
-            foreach (var line in lines)
-            {
-                var translatedLine = await translator.JapaneseToEnglishAsync(line.Trim());
-                translatedChapter.AppendLine(translatedLine);
-            }
-
-            // write english chapter
-            ChapterFile.WriteTranslatedChapter(translationPath, untranslatedChapterNum, translatedChapter.ToString());
+            var jpnLines = ChapterFile.ReadChapterFileByLine(downloadPath, untranslatedChapterNum);
+            ITranslator? translator = null;
+            if (!string.IsNullOrEmpty(opts.GoogleKey))
+                translator = new GoogleTranslator(opts.Verbose, opts.GoogleKey);
+            else
+                translator = new OllamaTranslator(opts.Verbose);
+            var engChapter = await translator.JapaneseToEnglishAsync(jpnLines);
+            ChapterFile.WriteTranslatedChapter(translationPath, untranslatedChapterNum, engChapter);
         }
     }
 
@@ -110,6 +106,8 @@ internal class Program
 
         // translate japanese chapters
         await TranslateJapaneseToEnglish(opts, downloadPath, translationPath);
+        
+        Environment.Exit(0);
     }
 
     private static void HandleParseError(ParserResult<Options> results, IEnumerable<Error> errs)
@@ -118,15 +116,7 @@ internal class Program
         Console.WriteLine(error);
     }
 
-    private static async Task Main(string[] args)
-    {
-        Console.OutputEncoding = Encoding.UTF8;
-        var results = Parser.Default.ParseArguments<Options>(args);
-        if (results.Tag == ParserResultType.Parsed)
-            await results.WithParsedAsync(async opts => await RunOptionsAndReturnExitCode(opts));
-        else
-            results.WithNotParsed(errs => HandleParseError(results, errs));
-    }
+
 
     public class Options
     {
@@ -135,6 +125,12 @@ internal class Program
 
         [Option('o', "out", Required = true, HelpText = "Output directory")]
         public string OutDir { get; set; } = "Novel";
+        
+        [Option('g', "google", Required = false, HelpText = "Google key for translate API")]
+        public string GoogleKey { get; set; } = "";
+        
+        [Option('x', "devnull", Required = false, HelpText = "Throwaway option for testing purposes")]
+        public string DevNull { get; set; } = "";
 
         [Option('n', "number_to_download", Required = false, HelpText = "Number of chapters to download (-1 for all)")]
         public int NumberOfChaptersToProcess { get; set; } = -1;
@@ -144,5 +140,15 @@ internal class Program
 
         [Option('v', "verbose", Default = false, Required = false, HelpText = "Set output to verbose messages")]
         public bool Verbose { get; set; } = false;
+    }
+    
+    private static async Task Main(string[] args)
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+        var results = Parser.Default.ParseArguments<Options>(args);
+        if (results.Tag == ParserResultType.Parsed)
+            await results.WithParsedAsync(async opts => await RunOptionsAndReturnExitCode(opts));
+        else
+            results.WithNotParsed(errs => HandleParseError(results, errs));
     }
 }
