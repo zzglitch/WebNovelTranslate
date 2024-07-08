@@ -35,14 +35,14 @@ public static class ChapterFile
         return missingKeys;
     }
 
-    private static string GetChapterFileName(string dir, int chapterNumber)
+    private static string GetChapterFileNameTxt(string dir, int chapterNumber)
     {
         return Path.Combine(dir, $"chapter-{chapterNumber:D4}.txt");
     }
-
+    
     public static void WriteDownloadedChapter(string outDir, ChapterDownloadResult chapter)
     {
-        var chapterFileName = GetChapterFileName(outDir, chapter.ChapterNumber);
+        var chapterFileName = GetChapterFileNameTxt(outDir, chapter.ChapterNumber);
         var builder = new StringBuilder();
         builder.AppendLine(chapter.ChapterTitle);
         builder.AppendLine();
@@ -52,13 +52,14 @@ public static class ChapterFile
 
     public static void WriteTranslatedChapter(string outDir, int chapterNum, string? chapterBody)
     {
-        var chapterFileName = GetChapterFileName(outDir, chapterNum);
+        ArgumentNullException.ThrowIfNull(chapterBody);
+        var chapterFileName = GetChapterFileNameTxt(outDir, chapterNum);
         File.WriteAllText(chapterFileName, chapterBody, Encoding.UTF8);
     }
 
     public static List<string> ReadChapterFileByLine(string inDir, int chapterNum)
     {
-        var chapterFileName = GetChapterFileName(inDir, chapterNum);
+        var chapterFileName = GetChapterFileNameTxt(inDir, chapterNum);
         return File.ReadAllLines(chapterFileName, Encoding.UTF8).ToList();
     }
 }

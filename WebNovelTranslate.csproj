@@ -12,6 +12,12 @@
         <PackageReference Include="Google.Cloud.Translation.V2" Version="3.4.0" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.61"/>
         <PackageReference Include="OllamaSharp" Version="2.0.6"/>
+        <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\chapter_template.cshtml" />
+      <EmbeddedResource Include="Resources\chapter_template.cshtml" />
     </ItemGroup>
 
 </Project>

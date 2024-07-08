@@ -102,9 +102,10 @@ internal class Program
         if (!Directory.Exists(translationPath)) Directory.CreateDirectory(translationPath);
 
         // download japanese chapters
-        if (opts.NumberOfChaptersToProcess != 0) await DownloadJapaneseChapters(opts, downloadPath);
+        if (opts.NumberOfChaptersToProcess != 0)
+            await DownloadJapaneseChapters(opts, downloadPath);
 
-        // translate japanese chapters
+        // translate chapters
         await TranslateJapaneseToEnglish(opts, downloadPath, translationPath);
         
         Environment.Exit(0);
