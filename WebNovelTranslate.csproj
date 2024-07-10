@@ -11,6 +11,9 @@
         <PackageReference Include="CommandLineParser" Version="2.9.1"/>
         <PackageReference Include="Google.Cloud.Translation.V2" Version="3.4.0" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.61"/>
+        <PackageReference Include="itext7" Version="8.0.4" />
+        <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.4" />
+        <PackageReference Include="itext7.pdfhtml" Version="5.0.4" />
         <PackageReference Include="OllamaSharp" Version="2.0.6"/>
         <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
     </ItemGroup>
@@ -18,6 +21,8 @@
     <ItemGroup>
       <None Remove="Resources\chapter_template.cshtml" />
       <EmbeddedResource Include="Resources\chapter_template.cshtml" />
+      <None Remove="Resources\novel_template.cshtml" />
+      <EmbeddedResource Include="Resources\novel_template.cshtml" />
     </ItemGroup>
 
 </Project>

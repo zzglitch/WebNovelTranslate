@@ -2,20 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@Model.ChapterTitle</title>
+    <title>@Model.NovelTitle</title>
 </head>
 <body>
-    <h1>@Model.ChapterTitle</h1>
-    @foreach (var line in Model.Lines)
+<h1>@Model.NovelTitle</h1>
+<br/>
+@foreach (var chapter in Model.Chapters)
+{
+    <h2>@chapter.ChapterTitle</h2>
+    @foreach (var line in chapter.Lines)
     {
         if (string.IsNullOrWhiteSpace(line))
         {
-            <br></br>
+            //<br></br>
         }
         else
         {
             <p>@line</p>
         }
     }
+}
 </body>
 </html>
